@@ -197,7 +197,7 @@ const uint8_t VL51L1X_DEFAULT_CONFIGURATION[] = {
 0x00, /* 0x84 : not user-modifiable */
 0x01, /* 0x85 : not user-modifiable */
 0x00, /* 0x86 : clear interrupt, use ClearInterrupt() */
-0x00  /* 0x87 : start ranging, use StartRanging() or StopRanging(), If you want an automatic start after VL53L1X_init() call, put 0x40 in location 0x87 */
+0x40  /* 0x87 : start ranging, use StartRanging() or StopRanging(), If you want an automatic start after VL53L1X_init() call, put 0x40 in location 0x87 */
 };
 
 static const uint8_t status_rtn[24] = { 255, 255, 255, 5, 2, 4, 1, 7, 3, 0,
@@ -227,20 +227,25 @@ VL53L1X_ERROR VL53L1X_SetI2CAddress(uint16_t dev, uint8_t new_address)
 VL53L1X_ERROR VL53L1X_SensorInit(uint16_t dev)
 {
 	VL53L1X_ERROR status = 0;
-	uint8_t Addr = 0x00, tmp;
+	//uint8_t tmp;
 
-	for (Addr = 0x2D; Addr <= 0x87; Addr++){
-		status |= VL53L1_WrByte(dev, Addr, VL51L1X_DEFAULT_CONFIGURATION[Addr - 0x2D]);
-		sleep_ms(2);
-	}
-	status |= VL53L1X_StartRanging(dev);
-	tmp  = 0;
+	VL53L1_WrByte(dev, 0x0000, 0x00);
+	VL53L1_WaitMs(dev, 100);
+	VL53L1_WrByte(dev, 0x0000, 0x01);
+	VL53L1_WaitMs(dev, 1);
+
+	VL53L1_WrMulti(dev, 0x002d, VL51L1X_DEFAULT_CONFIGURATION, 91);
+
+	VL53L1_WaitMs(dev, 100);
+
+	//status |= VL53L1X_StartRanging(dev);
+	/*tmp  = 0;
 	while(tmp==0){
-		sleep_ms(100);
 		status |= VL53L1X_CheckForDataReady(dev, &tmp);
 	}
 	status |= VL53L1X_ClearInterrupt(dev);
-	status |= VL53L1X_StopRanging(dev);
+	status |= VL53L1X_StopRanging(dev);*/
+
 	status |= VL53L1_WrByte(dev, VL53L1_VHV_CONFIG__TIMEOUT_MACROP_LOOP_BOUND, 0x09); /* two bounds VHV */
 	status |= VL53L1_WrByte(dev, 0x0B, 0); /* start VHV from the previous temperature */
 	return status;
@@ -297,12 +302,11 @@ VL53L1X_ERROR VL53L1X_CheckForDataReady(uint16_t dev, uint8_t *isDataReady)
 	uint8_t Temp;
 	uint8_t IntPol;
 	VL53L1X_ERROR status = 0;
-	uint64_t a =  to_ms_since_boot(get_absolute_time());
+	//uint64_t a =  to_ms_since_boot(get_absolute_time());
 	status |= VL53L1X_GetInterruptPolarity(dev, &IntPol);
-	VL53L1_WaitMs(dev, 2000);
-	//printf("gip %d&%d. ", status, IntPol);
-	uint64_t b =  to_ms_since_boot(get_absolute_time());
-	printf("%d\n", (b-a));
+	//printf("%d&%d. ", status, IntPol);
+	//uint64_t b =  to_ms_since_boot(get_absolute_time());
+	//printf("time: %d\n", (b-a));
 	status |= VL53L1_RdByte(dev, GPIO__TIO_HV_STATUS, &Temp);
 	//printf("rb %d&%d\n", status, Temp);
 	/* Read in the register to check if a new value is available */
@@ -537,8 +541,7 @@ VL53L1X_ERROR VL53L1X_BootState(uint16_t dev, uint8_t *state)
 	VL53L1X_ERROR status = 0;
 	uint8_t tmp = 0;
 
-	status |= VL53L1_RdByte(dev,VL53L1_FIRMWARE__SYSTEM_STATUS, &tmp);
-	printf("%h\n", tmp);
+	status |= VL53L1_RdByte(dev, VL53L1_FIRMWARE__SYSTEM_STATUS, &tmp);
 	*state = tmp;
 	return status;
 }

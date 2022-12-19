@@ -1,3 +1,4 @@
+
 /* 
 * This file is part of VL53L1 Platform 
 * 
@@ -33,8 +34,7 @@
 */
 
 /*
-* Modifications to functions are licensed as follows.
-*
+* Implementation of API methods is licensed as follows.
 * Copyright 2022 Alex Mous
 * 
 * License: 3-Clause BSD License
@@ -64,53 +64,67 @@
 * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE 
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
 */
- 
-#ifndef _VL53L1_PLATFORM_H_
-#define _VL53L1_PLATFORM_H_
 
-#include <stdint.h>
+#include "VL53L1_platform.h"
+#include "pico/binary_info.h"
+#include "hardware/i2c.h"
 
-#ifdef __cplusplus
-extern "C"
-{
+// Ensure i2c is available
+#if !defined(i2c_default) || !defined(PICO_DEFAULT_I2C_SDA_PIN) || !defined(PICO_DEFAULT_I2C_SCL_PIN)
+    #warning Board with I2C pins is required
 #endif
 
-int8_t VL53L1_WrByte(
-		uint16_t dev,
-		uint16_t      index,
-		uint8_t       data);
-
-int8_t VL53L1_WrWord(
-		uint16_t dev,
-		uint16_t      index,
-		uint16_t      data);
-
-int8_t VL53L1_WrDWord(
-		uint16_t dev,
-		uint16_t      index,
-		uint32_t      data);
-
-int8_t VL53L1_RdByte(
-		uint16_t dev,
-		uint16_t      index,
-		uint8_t      *pdata);
-
-int8_t VL53L1_RdWord(
-		uint16_t dev,
-		uint16_t      index,
-		uint16_t     *pdata);
-
-int8_t VL53L1_RdDWord(
-		uint16_t dev,
-		uint16_t      index,
-		uint32_t     *pdata);
-
-int8_t VL53L1_WaitMs(
-		uint16_t dev,
-		int32_t       wait_ms);
-
-#ifdef __cplusplus
+int8_t VL53L1_WrByte(uint16_t dev, uint16_t index, uint8_t data) {
+	uint8_t d[] = {index >> 8, index, data};
+	return i2c_write_blocking(i2c_default, (uint8_t)dev, d, 3, false) == PICO_ERROR_GENERIC;
 }
-#endif
 
-#endif
+int8_t VL53L1_WrWord(uint16_t dev, uint16_t index, uint16_t data) {
+	uint8_t d[] = {index >> 8, index, data >> 8, data};
+	return i2c_write_blocking(i2c_default, (uint8_t)dev, d, 4, false) == PICO_ERROR_GENERIC;
+}
+
+int8_t VL53L1_WrDWord(uint16_t dev, uint16_t index, uint32_t data) {
+	uint8_t d[] = {index >> 8, index, data >> 24, data >> 16, data >> 8, data};
+	return i2c_write_blocking(i2c_default, (uint8_t)dev, d, 6, false) == PICO_ERROR_GENERIC;
+}
+
+int8_t VL53L1_WrMulti(uint16_t dev, uint16_t index, uint8_t* data, uint8_t len) {
+	uint8_t d[] = {index >> 8, index};
+	if (i2c_write_blocking(i2c_default, (uint8_t)dev, d, 2, true) == PICO_ERROR_GENERIC)
+		return 1;
+	return i2c_write_blocking(i2c_default, (uint8_t)dev, data, len, false) == PICO_ERROR_GENERIC;
+}
+
+int8_t VL53L1_RdByte(uint16_t dev, uint16_t index, uint8_t *data) {
+    uint8_t buf[] = {index>>8, index};
+	return i2c_write_blocking(i2c_default, dev, buf, 2, true) == PICO_ERROR_GENERIC 
+		&& i2c_read_blocking(i2c_default, dev, data, 1, false) == PICO_ERROR_GENERIC;
+}
+
+int8_t VL53L1_RdWord(uint16_t dev, uint16_t index, uint16_t *data) {
+    uint8_t buf[] = {index>>8, index};
+	if (i2c_write_blocking(i2c_default, dev, buf, 2, true) == PICO_ERROR_GENERIC)
+		return 1;
+	uint8_t tmp[2];
+	if (i2c_read_blocking(i2c_default, dev, tmp, 2, false) == PICO_ERROR_GENERIC)
+		return 1;
+	*data = (tmp[0] << 8) | tmp[1];
+	return 0;
+}
+
+int8_t VL53L1_RdDWord(uint16_t dev, uint16_t index, uint32_t *data) {
+    uint8_t buf[] = {index>>8, index};
+	if (i2c_write_blocking(i2c_default, dev, buf, 2, true) == PICO_ERROR_GENERIC)
+		return 1;
+	uint8_t tmp[4];
+	if (i2c_read_blocking(i2c_default, dev, tmp, 4, false) == PICO_ERROR_GENERIC)
+		return 1;
+	*data = (tmp[0] << 24) | (tmp[1] << 16) | (tmp[2] << 8) | tmp[3];
+	return 0;
+}
+
+int8_t VL53L1_WaitMs(uint16_t dev, int32_t wait_ms) {
+	sleep_ms(wait_ms);
+	return 0;
+}
