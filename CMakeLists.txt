@@ -1,24 +1,30 @@
-cmake_minimum_required(VERSION 3.12)
+# Compile this library
+cmake_minimum_required(VERSION 3.25)
 
 # Pull in SDK by downloading the pico_sdk_import
 set(PICO_SDK_IMPORT ${CMAKE_CURRENT_LIST_DIR}/external/pico_sdk_import.cmake)
-if (NOT EXISTS ${MAKE_FS_DATA_SCRIPT})
+if (NOT EXISTS ${PICO_SDK_IMPORT})
         file(DOWNLOAD
-                https://github.com/raspberrypi/pico-sdk/blob/2e6142b15b8a75c1227dd3edbe839193b2bf9041/external/pico_sdk_import.cmake
-                ${MAKE_FS_DATA_SCRIPT}
+                https://raw.githubusercontent.com/raspberrypi/pico-sdk/2e6142b15b8a75c1227dd3edbe839193b2bf9041/external/pico_sdk_import.cmake
+                ${PICO_SDK_IMPORT}
                 )
 endif()
 
-include(PICO_SDK_IMPORT)
+include(${PICO_SDK_IMPORT})
+
+project(VL53L1X_api
+        VERSION 1.0.1
+        DESCRIPTION "VL53L1X Raspberry Pi Pico/Pico W API")
 
 
-project(vl53l1x_example C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
-
-# Initialize the SDK
 pico_sdk_init()
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
 
 add_compile_options(-Wall
         -Wno-format     
@@ -26,6 +32,29 @@ add_compile_options(-Wall
         -Wno-maybe-uninitialized
         )
 
+add_subdirectory(VL53L1X_pico)
 
-# Compile examples
-add_subdirectory(example)
+add_subdirectory(examples)
+
+
+#include(GNUInstallDirs)
+
+#add_library(${PROJECT_NAME} SHARED
+#    src/VL53L1X_api.c
+##    src/VL53L1X_calibration.c
+ #   src/VL53L1_platform.c
+#    )
+
+#set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
+
+#configure_file(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc @ONLY)
+
+#target_include_directories(${PROJECT_NAME} PRIVATE .)
+
+#target_link_libraries(${PROJECT_NAME} pico_stdlib)
+
+#install(TARGETS VL53L1X_api
+#    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+#install(FILES ${CMAKE_BINARY_DIR}/VL53L1X_api.pc DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)

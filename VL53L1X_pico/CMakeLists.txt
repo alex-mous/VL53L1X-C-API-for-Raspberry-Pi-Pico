@@ -1,0 +1,8 @@
+add_library(VL53L1X_api VL53L1_platform.c VL53L1X_api.c)
+add_library(VL53L1X_calibration VL53L1X_calibration.c VL53L1_platform.c VL53L1X_api.c)
+
+target_include_directories(VL53L1X_api INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(VL53L1X_calibration INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_link_libraries(VL53L1X_api pico_stdlib hardware_i2c)
+target_link_libraries(VL53L1X_calibration pico_stdlib hardware_i2c)
