@@ -16,7 +16,6 @@ project(VL53L1X_api
         VERSION 1.0.1
         DESCRIPTION "VL53L1X Raspberry Pi Pico/Pico W API")
 
-
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
@@ -32,29 +31,6 @@ add_compile_options(-Wall
         -Wno-maybe-uninitialized
         )
 
-add_subdirectory(VL53L1X_pico)
+add_subdirectory(VL53L1X_pico_api)
 
 add_subdirectory(examples)
-
-
-#include(GNUInstallDirs)
-
-#add_library(${PROJECT_NAME} SHARED
-#    src/VL53L1X_api.c
-##    src/VL53L1X_calibration.c
- #   src/VL53L1_platform.c
-#    )
-
-#set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
-
-#configure_file(${PROJECT_NAME}.pc.in ${PROJECT_NAME}.pc @ONLY)
-
-#target_include_directories(${PROJECT_NAME} PRIVATE .)
-
-#target_link_libraries(${PROJECT_NAME} pico_stdlib)
-
-#install(TARGETS VL53L1X_api
-#    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-#    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-#install(FILES ${CMAKE_BINARY_DIR}/VL53L1X_api.pc DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
