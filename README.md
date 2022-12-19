@@ -1,19 +1,17 @@
 # VL53L1X-C-API-Pico
 VL53L1X Time-of-Flight distance sensor API for the Raspberry Pi Pico/Pico W
 
-#### Notice: this library is in-progress
-- Please feel free to contribute to this library.
-- Major issues:
-    - i2c communiucation with the VL53L1X hangs up in several steps (booting, starting ranging, etc.). This can be mitigated, albeit not solved, by adding delays.
+### Some features of this API are still in progress, but basic measurements work.
 
 ## Usage
 See the examples for usage. To build the project, run the following:
 ```
 mkdir build
 cd build
-cmake .. -DPICO_BOARD=pico_w
+cmake ..
 make
 ```
+If you have a Pico W, append `-DPICO_BOARD=pico_w` to the `cmake` command.
 
 The resulting uf2 files to upload to the Pico board reside in the build/examples directory.
 
