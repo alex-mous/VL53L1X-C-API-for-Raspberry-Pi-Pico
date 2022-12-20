@@ -1,4 +1,4 @@
-# VL53L1X-C-API-Pico
+# VL53L1X Distance Sensor C/C++ API for Raspberry Pi Pico/Pico W
 ![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/alex-mous/VL53L1X-C-API-Pico)
 ![GitHub](https://img.shields.io/github/license/alex-mous/VL53L1X-C-API-Pico)
 ![GitHub issues](https://img.shields.io/github/issues/alex-mous/VL53L1X-C-API-Pico)
