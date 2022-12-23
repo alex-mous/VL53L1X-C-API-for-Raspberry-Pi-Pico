@@ -28,7 +28,16 @@ make
 ```
 Note: if you have a Pico W, append `-DPICO_BOARD=pico_w` to the `cmake` command.
 
-This will build the example code. The resulting uf2 file in the `build/examples/continuous_measurement` can be uploaded to a Pico/Pico W. This example shows how to initialize and use the VL53L1X sensor to continously measure. 
+This will build the example code. The resulting uf2 file in the `build/examples/continuous_measurement` can be uploaded to a Pico/Pico W. This example shows how to initialize and use the VL53L1X sensor to continously measure. The sensor must be attached to the following pins:
+
+| VL53L1X |  Pico |
+| ------ | ----- |
+| VDD | Unconnected (Provides 2.8V)
+| VIN | 3V3 |
+| GND | GND |
+| SDA | GPIO4 |
+| SDA | GPIO5 |
+| XSHUT | Unconnected (Used to reset device)|
 
 # Documentation
 The header files all have extensive documentation on the purpose of each function, which can be supplemented by the *STMicroelectronics VL53L1X Ultra Lite Driver User Manual (UM2510)*.
