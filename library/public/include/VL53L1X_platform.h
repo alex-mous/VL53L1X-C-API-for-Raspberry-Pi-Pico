@@ -72,16 +72,19 @@ extern "C"
 
 /* ----- Endianness Conversions  -----*/
 
+#ifndef htons
 #define htons(x)	((uint16_t)(((uint16_t)(x) & 0x00ff) << 8 |		\
 						((uint16_t)(x) & 0xff00) >> 8))
 #define ntohs(x)	htons(x)
+#endif
 
+#ifndef htonl
 #define htonl(x)	((uint32_t)(((uint32_t)(x) & 0x000000ff) << 24 |	\
 						((uint32_t)(x) & 0x0000ff00) << 8  | 			\
 						((uint32_t)(x) & 0x00ff0000) >> 8  |			\
 						((uint32_t)(x) & 0xff000000) >> 24))
 #define ntohl(x)	htonl(x)
-
+#endif
 
 /* ----- I2C Communication Parameters ----- */
 

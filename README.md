@@ -13,14 +13,12 @@ Please see [CONTRIBUTING.md](CONTRIBUTING.md)
 ## Future Features
 - C++ object-oriented library
 - Easy way to configure defaults passed into initialization functions
-
-
-# Usage
-To use this library in your own project, include the `VL53L1X_pico_api` directory in your CMake script (e.g. `add_subdirectory(VL53L1X_pico_api)`). Then, include the needed headers as specified below, and add `VL53L1X_pico_api` to the `target_link_libraries` for your project. Running `cmake` for your project should then include and compile this API as needed.
+- Thread worker
 
 # Examples
-To build the project, first clone the code and then run the following:
+To build the examples for the project, first clone the code and then run the following:
 ```
+cd examples
 mkdir build
 cd build
 cmake ..
@@ -28,7 +26,9 @@ make
 ```
 Note: if you have a Pico W, append `-DPICO_BOARD=pico_w` to the `cmake` command.
 
-This will build the example code. The resulting uf2 file in the `build/examples/continuous_measurement` can be uploaded to a Pico/Pico W. This example shows how to initialize and use the VL53L1X sensor to continously measure. The sensor must be attached to the following pins:
+This will build the example code. Either of th resulting `uf2` files in `build/examples/continuous_measurement` and  `build/examples/sampling` can be uploaded to a Pico/Pico W. The former will continously print the sensor reading to stdout (over USB), whereas the second only prints samples when input is recieved from stdin (also over USB). To use these, leave your Pico connected to your computer after uploading the `uf2` file, and open a USB serial connection to it (for example, using Putty on Windows or native tools on UNIX-based systems).
+
+For the examples to work correctly, the sensor must be attached to the following pins:
 
 | VL53L1X |  Pico |
 | ------ | ----- |
@@ -38,6 +38,34 @@ This will build the example code. The resulting uf2 file in the `build/examples/
 | SDA | GPIO4 |
 | SDA | GPIO5 |
 | XSHUT | Unconnected (Used to reset device)|
+
+# Installation
+To use/install this library in your own project, acquire a copy of this repo in your project (such as using `git submodule`), and then make the following modifications to your project's `CMakeLists.txt`:
+
+If your project structure is something like this:
+``` root/ (for your project)
+     yourapp.h
+     yourapp.c
+     CMakeLists.txt
+     build/
+         ...
+     VL53L1X-C-API-Pico/
+         library/
+             import.cmake
+             ...
+         ...
+```
+Then, add this line to your `CMakeLists.txt` file before defining/linking your executables (e.g. building `yourapp`):
+ ```
+ include(${PROJECT_SOURCE_DIR}/VL53L1X-C-API-Pico/library/import.cmake)
+ ```
+
+Then, to link `<your executable>` with libraries you already have (`<your libraries>`) and this VL53L1X library, change the `target_link_libraries` line for `<your executable>` as follows:
+```
+target_link_libraries(<your executable> PUBLIC pico_stdlib hardware_i2c VL53L1X_pico_api <your libraries> )
+```
+
+Running `cmake` for your project will now include and compile this API.
 
 # Documentation
 The header files all have extensive documentation on the purpose of each function, which can be supplemented by the *STMicroelectronics VL53L1X Ultra Lite Driver User Manual (UM2510)*.

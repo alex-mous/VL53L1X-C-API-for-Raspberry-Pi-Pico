@@ -1,9 +1,8 @@
 /*
 * Example usage of the VL53L1X Pico Library for Pico/Pico W
 *
-* This program will continously print out packets read from the VL53L1X sensor
-* to USB (to read them, leave the Pico/Pico W connected to your computer via USB
-* and then open a serial connection to the corresponding port with baudrate 115200).
+* This program will measure the VL53L1X sensor and print the result
+* every time a value is recieved from STDIN (e.g. over USB).
 */
 
 /*
@@ -99,9 +98,11 @@ int main() {
 	status += VL53L1X_SetInterMeasurementInMs(I2CDevAddr, 100);
 	status += VL53L1X_StartRanging(I2CDevAddr);
 
-    // Measure and print continuously
+    // Measure and print when value from stdin received
 	bool first_range = true;
 	while (1) {
+        // Read from stdin (blocking)
+        getc(stdin);
         // Wait until we have new data
 		uint8_t dataReady;
 		do {

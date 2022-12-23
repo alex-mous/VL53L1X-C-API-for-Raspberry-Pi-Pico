@@ -273,7 +273,7 @@ VL53L1X_Status_t VL53L1X_SetTimingBudgetInMs(uint16_t dev, uint16_t timingBudget
 	VL53L1X_Status_t status;
 
 	status = VL53L1X_GetDistanceMode(dev, &DM);
-	if (DM == 0)
+	if (status != 0)
 		return 1;
 
 	// DM is 1 for short distance mode, 2 for long
@@ -427,9 +427,11 @@ VL53L1X_Status_t VL53L1X_GetDistanceMode(uint16_t dev, uint16_t* DM) {
 	status = VL53L1X_RdByte(dev, PHASECAL_CONFIG__TIMEOUT_MACROP, &tDM);
 
 	if (tDM == 0x14)
-		*DM=1;
+		*DM = 1;
 	else if (tDM == 0x0A)
-		*DM=2;
+		*DM = 2;
+	else
+		*DM = 0;
 
 	return status;
 }

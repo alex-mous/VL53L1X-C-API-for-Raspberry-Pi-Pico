@@ -1,7 +1,7 @@
 add_executable(continuous continuous.c)
 
 # Link to pico libraries as well as the VL53L1X_pico_api
-target_link_libraries(continuous PUBLIC VL53L1X_pico_api pico_stdlib)
+target_link_libraries(continuous PUBLIC pico_stdlib hardware_i2c VL53L1X_pico_api)
 
 # Add needed library if Pico W
 if(${PICO_BOARD} STREQUAL pico_w)
