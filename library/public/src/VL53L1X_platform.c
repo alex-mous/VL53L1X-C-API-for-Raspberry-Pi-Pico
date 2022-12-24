@@ -104,12 +104,11 @@ VL53L1X_Status_t VL53L1X_I2C_Init(uint16_t addr, i2c_inst_t* i2c_device) {
 	// Validate sensor model ID and Type
 	uint16_t sensorId;
 	status = VL53L1X_GetSensorId(addr, &sensorId);
-	printf("%d,%04X", status, sensorId);
     if (sensorId != VL53L1X_SENSOR_ID) { // Bad connection, wrong chip, etc
         return -1;
     }
 
-	return 0;
+	return status;
 }
 
 VL53L1X_Status_t VL53L1X_WriteMulti(uint16_t addr, uint16_t reg, uint8_t *data, uint32_t count) {
