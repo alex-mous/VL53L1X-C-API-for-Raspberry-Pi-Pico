@@ -71,7 +71,7 @@ Running `cmake` for your project will now include and compile this API.
 If you are using C++, wrap the includes of this library in your project with an `extern` linkage specification as follows. Instead of `#include "VL53L1X_api.h"`, use:
 ```
 extern "C" {
-    #include "VL53L1X.h"
+    #include "VL53L1X_api.h"
 }
 ```
 
