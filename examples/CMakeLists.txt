@@ -7,7 +7,7 @@
 cmake_minimum_required(VERSION 3.25)
 
 # Pull in SDK by downloading the pico_sdk_import
-set(PICO_SDK_IMPORT ${BINARY_DIR}/external/pico_sdk_import.cmake)
+set(PICO_SDK_IMPORT ${CMAKE_BINARY_DIR}/external/pico_sdk_import.cmake)
 if (NOT EXISTS ${PICO_SDK_IMPORT})
         file(DOWNLOAD
                 https://raw.githubusercontent.com/raspberrypi/pico-sdk/2e6142b15b8a75c1227dd3edbe839193b2bf9041/external/pico_sdk_import.cmake

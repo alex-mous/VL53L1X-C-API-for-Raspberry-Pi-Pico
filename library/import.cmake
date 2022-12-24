@@ -24,6 +24,8 @@
 # Then, to link <your executable> with <your libraries> and this library:
 #     target_link_libraries(<your executable> PUBLIC pico_stdlib hardware_i2c VL53L1X_pico_api <your libraries> )
 
+message("Imported VL53L1X library")
+
 # Define project structure
 set(BIN_NAME VL53L1X_pico_api)
 set(LIB_VERSION_STR 2.0)

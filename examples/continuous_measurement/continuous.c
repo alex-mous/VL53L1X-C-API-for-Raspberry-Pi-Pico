@@ -41,10 +41,12 @@
 #include "VL53L1X_types.h"
 
 
+#define I2C_DEV_ADDR 0x29
+
+
 int main() {
 	VL53L1X_Status_t status;
 	VL53L1X_Result_t results;
-    uint8_t I2CDevAddr = 0x29;
 
     stdio_init_all();
 
@@ -79,7 +81,7 @@ int main() {
 
     // Initialize Pico's I2C using PICO_DEFAULT_I2C_SDA_PIN 
     // and PICO_DEFAULT_I2C_SCL_PIN (GPIO 4 and GPIO 5, respectively)
-    if (VL53L1X_I2C_Init(I2CDevAddr, i2c0) < 0) {
+    if (VL53L1X_I2C_Init(I2C_DEV_ADDR, i2c0) < 0) {
         printf("Error initializing sensor.\n");
         return 0;
     }
@@ -87,17 +89,17 @@ int main() {
     // Ensure the sensor has booted
     uint8_t sensorState;
     do {
-		status += VL53L1X_BootState(I2CDevAddr, &sensorState);
-		VL53L1X_WaitMs(I2CDevAddr, 2);
+		status += VL53L1X_BootState(I2C_DEV_ADDR, &sensorState);
+		VL53L1X_WaitMs(I2C_DEV_ADDR, 2);
 	} while (sensorState == 0);
 	printf("Sensor booted.\n");
 
     // Initialize and configure sensor
-	status = VL53L1X_SensorInit(I2CDevAddr);
-	status += VL53L1X_SetDistanceMode(I2CDevAddr, 1);
-	status += VL53L1X_SetTimingBudgetInMs(I2CDevAddr, 100);
-	status += VL53L1X_SetInterMeasurementInMs(I2CDevAddr, 100);
-	status += VL53L1X_StartRanging(I2CDevAddr);
+	status = VL53L1X_SensorInit(I2C_DEV_ADDR);
+	status += VL53L1X_SetDistanceMode(I2C_DEV_ADDR, 1);
+	status += VL53L1X_SetTimingBudgetInMs(I2C_DEV_ADDR, 100);
+	status += VL53L1X_SetInterMeasurementInMs(I2C_DEV_ADDR, 100);
+	status += VL53L1X_StartRanging(I2C_DEV_ADDR);
 
     // Measure and print continuously
 	bool first_range = true;
@@ -105,19 +107,19 @@ int main() {
         // Wait until we have new data
 		uint8_t dataReady;
 		do {
-			status = VL53L1X_CheckForDataReady(I2CDevAddr, &dataReady);
+			status = VL53L1X_CheckForDataReady(I2C_DEV_ADDR, &dataReady);
 			sleep_us(1);
 		} while (dataReady == 0);
 
         // Read and display result
-		status += VL53L1X_GetResult(I2CDevAddr, &results);
+		status += VL53L1X_GetResult(I2C_DEV_ADDR, &results);
 		printf("Status = %2d, dist = %5d, Ambient = %2d, Signal = %5d, #ofSpads = %5d\n",
 			results.status, results.distance, results.ambient, results.sigPerSPAD, results.numSPADs);
 
         // Clear the sensor for a new measurement
-		status += VL53L1X_ClearInterrupt(I2CDevAddr);
+		status += VL53L1X_ClearInterrupt(I2C_DEV_ADDR);
 		if (first_range) {  // Clear twice on first measurement
-			status += VL53L1X_ClearInterrupt(I2CDevAddr);
+			status += VL53L1X_ClearInterrupt(I2C_DEV_ADDR);
 			first_range = false;
 		}
 	}
