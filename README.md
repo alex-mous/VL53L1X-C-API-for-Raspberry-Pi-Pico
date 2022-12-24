@@ -67,6 +67,14 @@ target_link_libraries(<your executable> PUBLIC pico_stdlib hardware_i2c VL53L1X_
 
 Running `cmake` for your project will now include and compile this API.
 
+## Using C++
+If you are using C++, wrap the includes of this library in your project with an `extern` linkage specification as follows. Instead of `#include "VL53L1X_api.h"`, use:
+```
+extern "C" {
+    #include "VL53L1X.h"
+}
+```
+
 # Documentation
 The header files all have extensive documentation on the purpose of each function, which can be supplemented by the *STMicroelectronics VL53L1X Ultra Lite Driver User Manual (UM2510)*.
 
