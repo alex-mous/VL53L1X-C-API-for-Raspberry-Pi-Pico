@@ -8,14 +8,14 @@
 * Permission is hereby granted, free of charge, to any person obtaining a
 * copy of this software and associated documentation files (the "Software"),
 * to deal in the Software without restriction, including without limitation
-* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
 * and/or sell copies of the Software, and to permit persons to whom the
 * Software is furnished to do so, subject to the following conditions:
 *
-* The above copyright notice and this permission notice shall be included in 
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
 *
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -74,15 +74,15 @@ extern "C"
 
 #ifndef htons
 #define htons(x)	((uint16_t)(((uint16_t)(x) & 0x00ff) << 8 |		\
-						((uint16_t)(x) & 0xff00) >> 8))
+            ((uint16_t)(x) & 0xff00) >> 8))
 #define ntohs(x)	htons(x)
 #endif
 
 #ifndef htonl
 #define htonl(x)	((uint32_t)(((uint32_t)(x) & 0x000000ff) << 24 |	\
-						((uint32_t)(x) & 0x0000ff00) << 8  | 			\
-						((uint32_t)(x) & 0x00ff0000) >> 8  |			\
-						((uint32_t)(x) & 0xff000000) >> 24))
+            ((uint32_t)(x) & 0x0000ff00) << 8  | 			\
+            ((uint32_t)(x) & 0x00ff0000) >> 8  |			\
+            ((uint32_t)(x) & 0xff000000) >> 24))
 #define ntohl(x)	htonl(x)
 #endif
 
@@ -100,7 +100,7 @@ extern "C"
 
 /* ----- I2C Platform-Specific Implementation ----- */
 
-// Initialize the Pico I2C interface with needed parameters for 
+// Initialize the Pico I2C interface with needed parameters for
 // I2C controller <i2c_device> [i2c0 or i2c1, from hardware/i2c.h].
 // Address of VL53L1X sensor should be in <dev> (default value is 0x29)
 // Validates VL53L1X sensor is connected, and returns 0 on successful

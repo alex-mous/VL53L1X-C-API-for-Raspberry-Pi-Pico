@@ -8,14 +8,14 @@
 * Permission is hereby granted, free of charge, to any person obtaining a
 * copy of this software and associated documentation files (the "Software"),
 * to deal in the Software without restriction, including without limitation
-* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
 * and/or sell copies of the Software, and to permit persons to whom the
 * Software is furnished to do so, subject to the following conditions:
 *
-* The above copyright notice and this permission notice shall be included in 
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
 *
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -63,19 +63,19 @@ typedef int8_t VL53L1X_Status_t;
 
 // Results from reading all measurements in single access
 typedef struct {
-	uint8_t status;		// Status of measurement
-	uint16_t distance;	// Distance in mm
-	uint16_t ambient;	// Ambient
-	uint16_t sigPerSPAD;// Signal per SPAD
-	uint16_t numSPADs;	// Number SPADs
+  uint8_t status;		// Status of measurement
+  uint16_t distance;	// Distance in mm
+  uint16_t ambient;	// Ambient
+  uint16_t sigPerSPAD;// Signal per SPAD
+  uint16_t numSPADs;	// Number SPADs
 } VL53L1X_Result_t;
 
 // STMicroelectronics version
 typedef struct {
-	uint8_t      major;    /*!< major number */
-	uint8_t      minor;    /*!< minor number */
-	uint8_t      build;    /*!< build number */
-	uint32_t     revision; /*!< revision number */
+  uint8_t      major;    /*!< major number */
+  uint8_t      minor;    /*!< minor number */
+  uint8_t      build;    /*!< build number */
+  uint32_t     revision; /*!< revision number */
 } VL53L1X_Version_t;
 
 #endif  // _VL53L1X_TYPES_H_

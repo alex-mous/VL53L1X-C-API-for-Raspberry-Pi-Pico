@@ -8,14 +8,14 @@
 * Permission is hereby granted, free of charge, to any person obtaining a
 * copy of this software and associated documentation files (the "Software"),
 * to deal in the Software without restriction, including without limitation
-* the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+* the rights to use, copy, modify, merge, publish, distribute, sublicense,
 * and/or sell copies of the Software, and to permit persons to whom the
 * Software is furnished to do so, subject to the following conditions:
 *
-* The above copyright notice and this permission notice shall be included in 
+* The above copyright notice and this permission notice shall be included in
 * all copies or substantial portions of the Software.
 *
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -87,62 +87,62 @@
 
 
 VL53L1X_Status_t VL53L1X_CalibrateOffset(uint16_t dev, uint16_t targetDistInMm, int16_t *offset) {
-	int16_t avgDist = 0;
-	uint16_t distance;
-	VL53L1X_Status_t status;
+  int16_t avgDist = 0;
+  uint16_t distance;
+  VL53L1X_Status_t status;
 
-	status = VL53L1X_WrWord(dev, ALGO__PART_TO_PART_RANGE_OFFSET_MM, 0x0);
-	status |= VL53L1X_WrWord(dev, MM_CONFIG__INNER_OFFSET_MM, 0x0);
-	status |= VL53L1X_WrWord(dev, MM_CONFIG__OUTER_OFFSET_MM, 0x0);
-	status |= VL53L1X_StartRanging(dev);  // enable the sensor
-	for (uint8_t i=0; i<NUM_CALIBRATION_SAMPLES; i++) {
-		uint8_t tmp;
-		do {
-			status += VL53L1X_CheckForDataReady(dev, &tmp);
-		} while (tmp == 0);
-		status |= VL53L1X_GetDistance(dev, &distance);
-		status |= VL53L1X_ClearInterrupt(dev);
-		avgDist = avgDist + distance;
-	}
-	status |= VL53L1X_StopRanging(dev);
-	avgDist = avgDist / NUM_CALIBRATION_SAMPLES;
-	*offset = targetDistInMm - avgDist;
-	status |= VL53L1X_WrWord(dev, ALGO__PART_TO_PART_RANGE_OFFSET_MM, *offset*4);
-	return status;
+  status = VL53L1X_WrWord(dev, ALGO__PART_TO_PART_RANGE_OFFSET_MM, 0x0);
+  status |= VL53L1X_WrWord(dev, MM_CONFIG__INNER_OFFSET_MM, 0x0);
+  status |= VL53L1X_WrWord(dev, MM_CONFIG__OUTER_OFFSET_MM, 0x0);
+  status |= VL53L1X_StartRanging(dev);  // enable the sensor
+  for (uint8_t i=0; i<NUM_CALIBRATION_SAMPLES; i++) {
+    uint8_t tmp;
+    do {
+      status += VL53L1X_CheckForDataReady(dev, &tmp);
+    } while (tmp == 0);
+    status |= VL53L1X_GetDistance(dev, &distance);
+    status |= VL53L1X_ClearInterrupt(dev);
+    avgDist = avgDist + distance;
+  }
+  status |= VL53L1X_StopRanging(dev);
+  avgDist = avgDist / NUM_CALIBRATION_SAMPLES;
+  *offset = targetDistInMm - avgDist;
+  status |= VL53L1X_WrWord(dev, ALGO__PART_TO_PART_RANGE_OFFSET_MM, *offset*4);
+  return status;
 }
 
 VL53L1X_Status_t VL53L1X_CalibrateXtalk(uint16_t dev, uint16_t targetDistInMm, uint16_t *xtalk) {
-	float avgSigRate = 0;
-	float avgDist = 0;
-	float avgSpadNb = 0;
-	uint16_t distance = 0, sr, spadNum;
-	uint32_t calXtalk;
-	VL53L1X_Status_t status = 0;
+  float avgSigRate = 0;
+  float avgDist = 0;
+  float avgSpadNb = 0;
+  uint16_t distance = 0, sr, spadNum;
+  uint32_t calXtalk;
+  VL53L1X_Status_t status = 0;
 
-	status |= VL53L1X_WrWord(dev, 0x0016,0);
-	status |= VL53L1X_StartRanging(dev);
-	for (uint8_t i = 0; i < 50; i++) {
-		uint8_t tmp;
-		do {
-			status |= VL53L1X_CheckForDataReady(dev, &tmp);
-		} while (tmp == 0);
-		status |= VL53L1X_GetSignalRate(dev, &sr);
-		status |= VL53L1X_GetDistance(dev, &distance);
-		status |= VL53L1X_ClearInterrupt(dev);
-		status |= VL53L1X_GetSpadNb(dev, &spadNum);
-		avgDist = avgDist + distance;
-		avgSpadNb = avgSpadNb + spadNum;
-		avgSigRate = avgSigRate + sr;
-	}
-	status |= VL53L1X_StopRanging(dev);
-	avgDist = avgDist / NUM_CALIBRATION_SAMPLES;
-	avgSpadNb = avgSpadNb / NUM_CALIBRATION_SAMPLES;
-	avgSigRate = avgSigRate / NUM_CALIBRATION_SAMPLES;
-	// calculate Xtalk value
-	calXtalk = (uint16_t)(512*(avgSigRate*(1-(avgDist/targetDistInMm)))/avgSpadNb);
-	if (calXtalk > 0xffff)
-		calXtalk = 0xffff;
-	*xtalk = (uint16_t)((calXtalk*1000)>>9);
-	status |= VL53L1X_WrWord(dev, 0x0016, (uint16_t)calXtalk);
-	return status;
+  status |= VL53L1X_WrWord(dev, 0x0016,0);
+  status |= VL53L1X_StartRanging(dev);
+  for (uint8_t i = 0; i < 50; i++) {
+    uint8_t tmp;
+    do {
+      status |= VL53L1X_CheckForDataReady(dev, &tmp);
+    } while (tmp == 0);
+    status |= VL53L1X_GetSignalRate(dev, &sr);
+    status |= VL53L1X_GetDistance(dev, &distance);
+    status |= VL53L1X_ClearInterrupt(dev);
+    status |= VL53L1X_GetSpadNb(dev, &spadNum);
+    avgDist = avgDist + distance;
+    avgSpadNb = avgSpadNb + spadNum;
+    avgSigRate = avgSigRate + sr;
+  }
+  status |= VL53L1X_StopRanging(dev);
+  avgDist = avgDist / NUM_CALIBRATION_SAMPLES;
+  avgSpadNb = avgSpadNb / NUM_CALIBRATION_SAMPLES;
+  avgSigRate = avgSigRate / NUM_CALIBRATION_SAMPLES;
+  // calculate Xtalk value
+  calXtalk = (uint16_t)(512*(avgSigRate*(1-(avgDist/targetDistInMm)))/avgSpadNb);
+  if (calXtalk > 0xffff)
+    calXtalk = 0xffff;
+  *xtalk = (uint16_t)((calXtalk*1000)>>9);
+  status |= VL53L1X_WrWord(dev, 0x0016, (uint16_t)calXtalk);
+  return status;
 }
