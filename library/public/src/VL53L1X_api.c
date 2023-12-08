@@ -341,7 +341,7 @@ VL53L1X_Status_t VL53L1X_SetTimingBudgetInMs(uint16_t dev, uint16_t timingBudget
     }
   }
 
-  status |= VL53L1X_WrWord(dev, RANGE_CONFIG__TIMEOUT_MACROP_B_HI, rangeA);
+  status |= VL53L1X_WrWord(dev, RANGE_CONFIG__TIMEOUT_MACROP_A_HI, rangeA);
   status |= VL53L1X_WrWord(dev, RANGE_CONFIG__TIMEOUT_MACROP_B_HI, rangeB);
   return status;
 }
